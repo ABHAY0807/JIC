@@ -763,16 +763,20 @@ if (directInquiryForm) {
               <tr><th>${dateLabel}</th><td>${timeFormatted} IST</td></tr>
               <tr><th>${msgLabel}</th><td>${msgVal}</td></tr>
             </table>
-            <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
-              <a href="${waUrl}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.8rem; border-radius:6px; padding:7px 12px;">
+            <div class="inquiry-receipt-actions">
+              <a href="${waUrl}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.82rem; border-radius:6px; padding:8px 14px;">
                 <span>💬 WhatsApp Direct</span>
               </a>
-              <a href="${mailtoUrl}" style="background:var(--teal); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.8rem; border-radius:6px; padding:7px 12px;">
+              <a href="${mailtoUrl}" style="background:var(--teal); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.82rem; border-radius:6px; padding:8px 14px;">
                 <span>✉️ Open in Email</span>
               </a>
             </div>
-            <p style="font-size:0.8rem;color:var(--muted);margin-top:8px;">${footerMsg}</p>
+            <p style="font-size:0.8rem;color:var(--muted);margin-top:10px;line-height:1.5;">${footerMsg}</p>
           </div>`;
+
+        setTimeout(() => {
+          inquiryStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 120);
       }
       checkDailyLimitStatus();
     };
