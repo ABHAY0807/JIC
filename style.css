@@ -159,6 +159,11 @@ html[lang="gu"] .brand-name, html[lang="gu"] .panel-number {
   font-family: 'Noto Sans Gujarati', var(--font-heading);
   letter-spacing: normal !important;
 }
+html[lang="gu"] .brand-name small {
+  font-family: 'Noto Sans Gujarati', var(--font-sans);
+  letter-spacing: 0 !important;
+  text-transform: none;
+}
 
 html[lang="hi"] body,
 html[lang="hi"] button,
@@ -171,6 +176,11 @@ html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] h3, html[lang="hi"] h4, 
 html[lang="hi"] .brand-name, html[lang="hi"] .panel-number {
   font-family: 'Noto Sans Devanagari', var(--font-heading);
   letter-spacing: normal !important;
+}
+html[lang="hi"] .brand-name small {
+  font-family: 'Noto Sans Devanagari', var(--font-sans);
+  letter-spacing: 0 !important;
+  text-transform: none;
 }
 
 a {
@@ -485,6 +495,7 @@ h1 em, h2 em {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   text-align: left;
   font-family: var(--font-heading);
   font-weight: 800;
@@ -492,17 +503,21 @@ h1 em, h2 em {
   letter-spacing: -0.3px;
   color: var(--dark);
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 .brand-name small {
+  display: block;
   font-family: var(--font-sans);
   color: var(--teal);
   font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 1.2px;
+  letter-spacing: 0.9px;
   text-transform: uppercase;
   margin-top: 2px;
   text-align: left;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
@@ -2682,6 +2697,9 @@ textarea {
 }
 
 .faq-icon {
+  --icon-bar-len: 12px;
+  --icon-bar-w: 2px;
+  position: relative;
   flex: 0 0 32px;
   width: 32px;
   height: 32px;
@@ -2693,11 +2711,35 @@ textarea {
   border-radius: 50%;
   background: var(--mist);
   color: var(--teal);
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1;
+  font-size: 0 !important;
+  line-height: 0 !important;
   border: 1.5px solid var(--border-subtle);
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background var(--transition), color var(--transition), border-color var(--transition);
+  box-sizing: border-box;
+}
+
+.faq-icon::before,
+.faq-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: currentColor;
+  border-radius: 2px;
+  pointer-events: none;
+  transition: background-color var(--transition);
+}
+
+.faq-icon::before {
+  width: var(--icon-bar-len);
+  height: var(--icon-bar-w);
+  transform: translate(-50%, -50%);
+}
+
+.faq-icon::after {
+  width: var(--icon-bar-w);
+  height: var(--icon-bar-len);
+  transform: translate(-50%, -50%);
 }
 
 .faq-list summary:hover .faq-icon {
@@ -3128,19 +3170,22 @@ footer {
   }
 
   .brand img {
-    width: 52px !important;
-    height: 52px !important;
-    min-width: 52px !important;
-    min-height: 52px !important;
-    padding: 3px;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    padding: 2.5px;
   }
 
   .brand-name {
-    font-size: 1.12rem;
+    font-size: 1.08rem;
   }
 
   .brand-name small {
-    font-size: 0.62rem;
+    display: block;
+    font-size: 0.60rem;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
   }
 
   .menu-toggle {
@@ -3530,7 +3575,8 @@ footer {
     height: 28px;
     min-width: 28px;
     min-height: 28px;
-    font-size: 1.1rem;
+    --icon-bar-len: 11px;
+    --icon-bar-w: 2px;
   }
 
   .faq-answer {
@@ -3570,16 +3616,18 @@ footer {
 
 @media (max-width: 480px) {
   .nav-wrap .container {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .nav {
-    gap: 4px;
+    gap: 6px;
   }
 
   .nav-left {
     gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   .brand {
@@ -3587,19 +3635,25 @@ footer {
   }
 
   .brand img {
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px !important;
-    min-height: 42px !important;
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    padding: 2px;
   }
 
   .brand-name {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    line-height: 1.12;
   }
 
   .brand-name small {
-    font-size: 0.54rem;
-    letter-spacing: 0.5px;
+    display: block !important;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+    white-space: nowrap;
   }
 
   .nav-center {
@@ -3815,7 +3869,8 @@ footer {
     height: 26px;
     min-width: 26px;
     min-height: 26px;
-    font-size: 1rem;
+    --icon-bar-len: 10px;
+    --icon-bar-w: 2px;
   }
 
   .faq-answer {
@@ -3855,18 +3910,61 @@ footer {
     padding-right: 8px;
   }
 
-  .brand-name small {
-    display: none;
+  .nav {
+    gap: 4px;
+  }
+
+  .nav-left {
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .brand {
+    gap: 5px;
+  }
+
+  .brand img {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    padding: 1.5px;
   }
 
   .brand-name {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
+    line-height: 1.1;
+  }
+
+  .brand-name small {
+    display: block !important;
+    font-size: 0.46rem;
+    font-weight: 700;
+    letter-spacing: 0.15px;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+
+  .nav-center .dropdown-trigger-btn {
+    height: 30px;
+    padding: 0 5px;
+    font-size: 0.70rem;
+    gap: 2px;
   }
 
   .nav-center .dropdown-trigger-btn .btn-label {
-    max-width: 46px;
+    max-width: 42px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .nav-center .theme-icon-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    font-size: 0.82rem;
   }
 
   .slide-copy {
@@ -3903,7 +4001,8 @@ footer {
     height: 24px;
     min-width: 24px;
     min-height: 24px;
-    font-size: 0.92rem;
+    --icon-bar-len: 9px;
+    --icon-bar-w: 2px;
   }
 
   .faq-answer {
