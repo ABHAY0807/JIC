@@ -1,0 +1,164 @@
+mutation CreateUser @auth(level: USER) {
+  user_insert(data: {
+    id_expr: "auth.uid",
+    email: "user@example.com",
+    displayName: "New User"
+  })
+}
+
+mutation UpdateUser @auth(level: USER) {
+  user_update(key: {id_expr: "auth.uid"}, data: {displayName: "Updated Name"})
+}
+
+mutation DeleteUser @auth(level: USER) {
+  user_delete(key: {id_expr: "auth.uid"})
+}
+
+query GetUser @auth(level: USER) {
+  user(key: {id_expr: "auth.uid"}) {
+    email
+    displayName
+  }
+}
+
+query ListUsers @auth(level: PUBLIC, insecureReason: "Publicly sharing display names is intended for social features.") {
+  users {
+    id
+    displayName
+  }
+}
+
+mutation CreateProject @auth(level: USER) {
+  project_insert(data: {
+    title: "New Project",
+    createdAt_expr: "request.time",
+    owner: {id_expr: "auth.uid"}
+  })
+}
+
+mutation UpdateProject($id: UUID!, $title: String!) @auth(level: USER) {
+  project_update(key: {id: $id}, data: {title: $title})
+}
+
+mutation DeleteProject($id: UUID!) @auth(level: USER) {
+  project_delete(key: {id: $id})
+}
+
+query GetProject($id: UUID!) @auth(level: USER) {
+  project(id: $id) {
+    title
+    description
+  }
+}
+
+query ListProjects @auth(level: USER) {
+  projects(where: {owner: {id: {eq_expr: "auth.uid"}}}) {
+    id
+    title
+  }
+}
+
+mutation CreateTask($projectId: UUID!, $title: String!) @auth(level: USER) {
+  task_insert(data: {
+    title: $title,
+    status: "TODO",
+    priority: "MEDIUM",
+    project: {id: $projectId},
+    assignee: {id_expr: "auth.uid"}
+  })
+}
+
+mutation UpdateTask($id: UUID!, $status: String!) @auth(level: USER) {
+  task_update(key: {id: $id}, data: {status: $status})
+}
+
+mutation DeleteTask($id: UUID!) @auth(level: USER) {
+  task_delete(key: {id: $id})
+}
+
+query GetTask($id: UUID!) @auth(level: USER) {
+  task(id: $id) {
+    title
+    status
+  }
+}
+
+query ListTasks @auth(level: USER) {
+  tasks(where: {assignee: {id: {eq_expr: "auth.uid"}}}) {
+    id
+    title
+  }
+}
+
+mutation CreateComment($taskId: UUID!, $content: String!) @auth(level: USER) {
+  comment_insert(data: {
+    content: $content,
+    createdAt_expr: "request.time",
+    task: {id: $taskId},
+    author: {id_expr: "auth.uid"}
+  })
+}
+
+mutation UpdateComment($id: UUID!, $content: String!) @auth(level: USER) {
+  comment_update(key: {id: $id}, data: {content: $content})
+}
+
+mutation DeleteComment($id: UUID!) @auth(level: USER) {
+  comment_delete(key: {id: $id})
+}
+
+query GetComment($id: UUID!) @auth(level: USER) {
+  comment(id: $id) {
+    content
+  }
+}
+
+query ListComments($taskId: UUID!) @auth(level: USER) {
+  comments(where: {taskId: {eq: $taskId}}) {
+    content
+    author { displayName }
+  }
+}
+
+mutation CreateTag($name: String!, $color: String!) @auth(level: USER) {
+  tag_insert(data: {
+    name: $name,
+    colorCode: $color,
+    owner: {id_expr: "auth.uid"}
+  })
+}
+
+mutation UpdateTag($id: UUID!, $color: String!) @auth(level: USER) {
+  tag_update(key: {id: $id}, data: {colorCode: $color})
+}
+
+mutation DeleteTag($id: UUID!) @auth(level: USER) {
+  tag_delete(key: {id: $id})
+}
+
+query GetTag($id: UUID!) @auth(level: USER) {
+  tag(id: $id) {
+    name
+    colorCode
+  }
+}
+
+query ListTags @auth(level: USER) {
+  tags(where: {owner: {id: {eq_expr: "auth.uid"}}}) {
+    name
+  }
+}
+
+mutation LinkTaskTag($taskId: UUID!, $tagId: UUID!) @auth(level: USER) {
+  taskTag_insert(data: {task: {id: $taskId}, tag: {id: $tagId}})
+}
+
+mutation RemoveTaskTag($taskId: UUID!, $tagId: UUID!) @auth(level: USER) {
+  taskTag_delete(key: {taskId: $taskId, tagId: $tagId})
+}
+
+query ListTaskTags($taskId: UUID!) @auth(level: USER) {
+  taskTags(where: {taskId: {eq: $taskId}}) {
+    tag { name }
+  }
+}

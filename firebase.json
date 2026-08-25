@@ -1,0 +1,19 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "jic/**",
+      "dataconnect/**",
+      "public/**",
+      "server.js",
+      "run.bat",
+      "README.md",
+      "firestore.rules",
+      "firestore.indexes.json"
+    ]
+  }
+}
