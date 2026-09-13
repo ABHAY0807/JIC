@@ -603,6 +603,13 @@ if (window.location.search.includes('reset') || window.location.hash.includes('r
 }
 
 function checkDailyLimitStatus() {
+  const isLocal = window.location.protocol === 'file:' ||
+                  window.location.hostname === 'localhost' ||
+                  window.location.hostname === '127.0.0.1';
+  if (isLocal) {
+    return true; // Never block local development/testing
+  }
+
   const count = getDailyCount();
   const inquiryStatus = document.getElementById('inquiryStatusBox');
   const submitBtn = document.getElementById('submitInquiryBtn');
