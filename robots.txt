@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jic.in/sitemap.xml
