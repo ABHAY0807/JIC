@@ -7,6 +7,8 @@
 
 const CAROUSEL_SPEED_MS = 5000;
 const FORM_SUBMIT_URL = 'https://formsubmit.co/ajax/arunsolankipress@gmail.com';
+const GOOGLE_SCRIPT_WEBHOOK_URL = ''; // Paste your Google Apps Script Webhook URL here for 100% direct inbox delivery
+
 
 // Current State
 let currentLang = 'en';
@@ -721,13 +723,28 @@ if (directInquiryForm) {
     }
     if (inquiryStatus) inquiryStatus.innerHTML = '';
 
-    const showConfirmation = (isSent = true, customMessage = '') => {
+    const showConfirmation = (isSent = true, customMessage = '', isActivationNotice = false) => {
       incrementDailyCount();
       directInquiryForm.reset();
       if (countryCodeSelect) countryCodeSelect.value = '+91';
 
-      const successTitle = currentLang === 'gu' ? '✅ ઇન્ક્વાયરી મોકલાઈ ગઈ છે!' : currentLang === 'hi' ? '✅ पूछताछ सफलतापूर्वक भेजी गई!' : '✅ Inquiry Sent!';
-      const successMsg = customMessage || (currentLang === 'gu' ? 'તમારી વિગતો <strong>arunsolankipress@gmail.com</strong> પર મોકલાઈ ગઈ છે.' : currentLang === 'hi' ? 'आपकी जानकारी <strong>arunsolankipress@gmail.com</strong> पर भेज दी गई है।' : 'Your inquiry details have been delivered to <strong>arunsolankipress@gmail.com</strong>.');
+      let successTitle = currentLang === 'gu'
+        ? '✅ ઇન્ક્વાયરી નોંધાઈ ગઈ છે!'
+        : currentLang === 'hi'
+        ? '✅ पूछताछ सफलतापूर्वक दर्ज हुई!'
+        : '✅ Inquiry Recorded Successfully!';
+
+      let successMsg = customMessage || (currentLang === 'gu'
+        ? 'તમારી વિગતો <strong>arunsolankipress@gmail.com</strong> પર મોકલાઈ ગઈ છે.'
+        : currentLang === 'hi'
+        ? 'आपकी जानकारी <strong>arunsolankipress@gmail.com</strong> पर भेज दी गई है।'
+        : 'Your inquiry details have been forwarded to <strong>arunsolankipress@gmail.com</strong>.');
+
+      if (isActivationNotice) {
+        successTitle = '⚠️ Inquiry Recorded & Action Required';
+        successMsg = 'Inquiry generated! FormSubmit requires a one-time activation. Check <strong>arunsolankipress@gmail.com</strong> (including Spam folder) for the activation link, or click WhatsApp Direct below to send instantly.';
+      }
+
       const refLabel = currentLang === 'gu' ? 'રેફરન્સ ID' : currentLang === 'hi' ? 'રેફરન્સ ID' : 'Reference ID';
       const nameLabel = currentLang === 'gu' ? 'ગ્રાહકનું નામ' : currentLang === 'hi' ? 'ग्राहक का नाम' : 'Client Name';
       const phoneLabel = currentLang === 'gu' ? 'મોબાઇલ નંબર' : currentLang === 'hi' ? 'मोबाइल नंबर' : 'Mobile Number';
@@ -735,16 +752,20 @@ if (directInquiryForm) {
       const reqLabel = currentLang === 'gu' ? 'જરૂરિયાત' : currentLang === 'hi' ? 'आवश्यकता' : 'Requirement';
       const dateLabel = currentLang === 'gu' ? 'તારીખ અને સમય' : currentLang === 'hi' ? 'दिनांक व समय' : 'Date & Time';
       const msgLabel = currentLang === 'gu' ? 'સંદેશ' : currentLang === 'hi' ? 'संदेश' : 'Message';
-      const footerMsg = currentLang === 'gu' ? 'જી. એચ. સોલંકી તમારી વિગતો તપાસીને ટૂંક સમયમાં તમારો સંપર્ક કરશે.' : currentLang === 'hi' ? 'जी. एच. सोलंकी आपकी जानकारी की समीक्षा कर शीघ्र ही आपसे संपर्क करेंगे।' : 'G.H. Solanki will review your request and get in touch with you shortly.';
+      const footerMsg = currentLang === 'gu'
+        ? 'જી. એચ. સોલંકી તમારી વિગતો તપાસીને ટૂંક સમયમાં તમારો સંપર્ક કરશે.'
+        : currentLang === 'hi'
+        ? 'जी. एच. सोलंकी आपकी जानकारी की समीक्षा कर शीघ्र ही आपसे संपर्क करेंगे।'
+        : 'G.H. Solanki will review your request and get in touch with you shortly.';
 
-      const mailtoSubject = encodeURIComponent(`🔔 New JIC Insurance Inquiry: ${nameVal} [${refId}]`);
+      const mailtoSubject = encodeURIComponent(`🔔 New JIC Insurance Inquiry: ${nameVal} - ${interestVal} [${refId}]`);
       const mailtoBody = encodeURIComponent(
-        `Client Name: ${nameVal}\nPhone: ${fullPhone}\nEmail: ${emailVal}\nRequirement: ${interestVal}\nDate: ${timeFormatted} IST\nReference ID: ${refId}\n\nMessage:\n${msgVal}`
+        `Hello G.H. Solanki,\n\nI have submitted an insurance inquiry on JIC:\n\nReference ID: ${refId}\nClient Name: ${nameVal}\nPhone: ${fullPhone}\nEmail: ${emailVal}\nRequirement: ${interestVal}\nDate: ${timeFormatted} IST\n\nMessage:\n${msgVal}\n\nPlease share guidance and quotes.`
       );
       const mailtoUrl = `mailto:arunsolankipress@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
 
       const waMsg = encodeURIComponent(
-        `Hello G.H. Solanki Sir,\n\n*New Insurance Inquiry (JIC)*\n*Reference ID:* ${refId}\n*Name:* ${nameVal}\n*Phone:* ${fullPhone}\n*Requirement:* ${interestVal}\n*Message:* ${msgVal}`
+        `Hello G.H. Solanki Sir,\n\n*New Insurance Inquiry (JIC)*\n*Reference ID:* ${refId}\n*Name:* ${nameVal}\n*Phone:* ${fullPhone}\n*Email:* ${emailVal}\n*Requirement:* ${interestVal}\n*Date:* ${timeFormatted} IST\n\n*Message:* ${msgVal}`
       );
       const waUrl = `https://wa.me/919924090239?text=${waMsg}`;
 
@@ -753,7 +774,7 @@ if (directInquiryForm) {
         inquiryStatus.innerHTML = `
           <div class="inquiry-receipt-card">
             <h4>${successTitle}</h4>
-            <p>${successMsg}</p>
+            <p style="margin-bottom:12px;line-height:1.5;">${successMsg}</p>
             <table class="inquiry-receipt-table">
               <tr><th>${refLabel}</th><td><strong>${refId}</strong></td></tr>
               <tr><th>${nameLabel}</th><td>${nameVal}</td></tr>
@@ -764,14 +785,14 @@ if (directInquiryForm) {
               <tr><th>${msgLabel}</th><td>${msgVal}</td></tr>
             </table>
             <div class="inquiry-receipt-actions">
-              <a href="${waUrl}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.82rem; border-radius:6px; padding:8px 14px;">
-                <span>💬 WhatsApp Direct</span>
+              <a href="${waUrl}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:0.85rem; border-radius:6px; padding:10px 16px;">
+                <span>💬 WhatsApp Direct (+91 99240 90239)</span>
               </a>
-              <a href="${mailtoUrl}" style="background:var(--teal); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; font-size:0.82rem; border-radius:6px; padding:8px 14px;">
-                <span>✉️ Open in Email</span>
+              <a href="${mailtoUrl}" style="background:var(--teal); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:0.85rem; border-radius:6px; padding:10px 16px;">
+                <span>✉️ Open in Email (arunsolankipress@gmail.com)</span>
               </a>
             </div>
-            <p style="font-size:0.8rem;color:var(--muted);margin-top:10px;line-height:1.5;">${footerMsg}</p>
+            <p style="font-size:0.8rem;color:var(--muted);margin-top:12px;line-height:1.5;">${footerMsg}</p>
           </div>`;
 
         setTimeout(() => {
@@ -790,23 +811,44 @@ if (directInquiryForm) {
         Client_Message: msgVal,
         Inquiry_Timestamp: `${timeFormatted} IST`,
         Reference_ID: refId,
-        _subject: `🔔 New JIC Insurance Inquiry: ${nameVal} - ${interestVal} [${refId}]`
+        _subject: `🔔 New JIC Insurance Inquiry: ${nameVal} - ${interestVal} [${refId}]`,
+        _template: 'table',
+        _captcha: 'false'
       };
 
       const isFileProtocol = window.location.protocol === 'file:';
       const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       let sentSuccess = false;
-      let responseMsg = '';
+      let isActivationNotice = false;
 
-      // 1. Try local server relay if on localhost, 127.0.0.1, or file://
-      if (isLocalHost || isFileProtocol) {
+      // 1. If Google Apps Script Webhook is configured, dispatch directly via Gmail API
+      if (typeof GOOGLE_SCRIPT_WEBHOOK_URL === 'string' && GOOGLE_SCRIPT_WEBHOOK_URL.trim() !== '') {
         try {
-          const endpoint = isFileProtocol ? 'http://localhost:3000/api/inquiry' : '/api/inquiry';
-          const relayRes = await fetch(endpoint, {
+          await fetch(GOOGLE_SCRIPT_WEBHOOK_URL.trim(), {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
+          sentSuccess = true;
+        } catch (gErr) {
+          console.warn('Google Script dispatch error:', gErr.message);
+        }
+      }
+
+      // 2. Try local server relay if on localhost or file://
+      if (!sentSuccess && (isLocalHost || isFileProtocol)) {
+        try {
+          const endpoint = isFileProtocol ? 'http://localhost:3000/api/inquiry' : '/api/inquiry';
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          const relayRes = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
           const relayData = await relayRes.json().catch(() => ({}));
           if (relayRes.ok && (relayData.success === 'true' || relayData.success === true)) {
             sentSuccess = true;
@@ -814,24 +856,29 @@ if (directInquiryForm) {
         } catch (relayErr) { }
       }
 
-      // On production static deployment (Netlify, Vercel, GitHub Pages, cPanel) or fallback:
+      // 3. Fallback to FormSubmit JSON POST
       if (!sentSuccess) {
-        const formData = new FormData(directInquiryForm);
-        formData.set('Mobile_Number', fullPhone);
-        const directRes = await fetch(FORM_SUBMIT_URL, {
-          method: 'POST',
-          body: formData,
-          headers: { Accept: 'application/json' }
-        });
-        const directData = await directRes.json().catch(() => ({}));
-        if (directRes.ok && (directData.success === 'true' || directData.success === true)) {
-          sentSuccess = true;
-        }
+        try {
+          const directRes = await fetch(FORM_SUBMIT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          const directData = await directRes.json().catch(() => ({}));
+          if (directRes.ok && (directData.success === 'true' || directData.success === true)) {
+            sentSuccess = true;
+          } else if (directData.message && directData.message.includes('Activation')) {
+            isActivationNotice = true;
+          }
+        } catch (directErr) { }
       }
 
-      showConfirmation(true, responseMsg);
+      showConfirmation(sentSuccess, '', isActivationNotice);
     } catch (error) {
-      showConfirmation(true);
+      showConfirmation(false);
     } finally {
       if (submitButton) {
         submitButton.disabled = false;
