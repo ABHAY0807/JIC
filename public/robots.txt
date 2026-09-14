@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jagrutiinsuranceconsultancy.in/sitemap.xml
+Sitemap: https://jicinsurance.in/sitemap.xml
